@@ -1,7 +1,0 @@
-{
-    "functions": {
-        "api/post/get.js": {
-            "maxDuration": 60
-        }
-    }
-}
