@@ -23,7 +23,7 @@ export async function POST(request) {
         if (!isValidPassword) {
             return NextResponse.json({ success: false, error: "Incorrect Password" }, { status: 402 });
         }
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "4h" });
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || "svdvvd03r31a322@22%%4-35539356%^&*%", { expiresIn: "4h" });
         if (!token) {
             return NextResponse.json({ success: false, error: "Something went wrong" });
         }

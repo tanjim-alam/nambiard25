@@ -10,8 +10,8 @@ export async function GET(request) {
 
     try {
         // Verify the token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("decoded", decoded)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "svdvvd03r31a322@22%%4-35539356%^&*%");
+        // console.log("decoded", decoded)
         const user = await User.findById(decoded.id);
 
         if (!user) {
@@ -26,10 +26,10 @@ export async function GET(request) {
 
     } catch (error) {
         // Handle token verification or database errors
-        console.log("error.message", error.message)
+        // console.log("error.message", error.message)
         let errorMessage = 'An error occurred';
         let statusCode = 500;
-        console.log("error.name", error.name)
+        // console.log("error.name", error.name)
         if (error.name === 'TokenExpiredError') {
             errorMessage = 'Token expired';
             statusCode = 401;
