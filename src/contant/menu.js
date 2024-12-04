@@ -29,32 +29,20 @@ export const adminMenu = [
     },
     {
         id: 4,
-        label: 'Task',
-        path: '/task',
+        label: 'Leads',
+        path: '/leads',
         icon: HiOutlineUsers
     },
     {
         id: 5,
-        label: 'Transactions',
-        path: '/transactions',
+        label: 'Blogs',
+        path: '/blogs',
         icon: HiOutlineDocumentText
     },
     {
         id: 6,
-        label: 'Reminder',
-        path: '/reminder',
-        icon: HiOutlineAnnotation
-    },
-    {
-        id: 7,
-        label: 'Leave',
-        path: '/leave',
-        icon: HiOutlineAnnotation
-    },
-    {
-        id: 8,
-        label: 'Booked',
-        path: '/booked',
+        label: 'Add Blog',
+        path: '/add-blog',
         icon: HiOutlineAnnotation
     }
 ]

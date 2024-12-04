@@ -1,3 +1,4 @@
+import axiosInstance from "@/utils/axiosInstance";
 import axios from "axios";
 
 const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
@@ -9,7 +10,7 @@ const initialState = {
 
 export const addPost = createAsyncThunk("/addpost", async (data) => {
     try {
-        const res = await axios.post("/api/post/add", data);
+        const res = await axiosInstance.post("/post/add", data);
         return await res.data
     } catch (error) {
         throw new Error(error.message)
@@ -19,7 +20,7 @@ export const addPost = createAsyncThunk("/addpost", async (data) => {
 
 export const getPost = createAsyncThunk("/getpost", async () => {
     try {
-        const res = await axios.get("/api/post/get");
+        const res = await axiosInstance.get("/post/get");
         return await res.data
     } catch (error) {
         throw new Error(error.message)
@@ -30,7 +31,7 @@ export const getPost = createAsyncThunk("/getpost", async () => {
 export const updatePost = createAsyncThunk("", async (data) => {
     try {
         // console.log("data", data)
-        const res = await axios.put("/api/post/update", data);
+        const res = await axiosInstance.put("/post/update", data);
         // console.log(res)
         return res.data;
     } catch (error) {

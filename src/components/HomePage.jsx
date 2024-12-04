@@ -1,31 +1,16 @@
 "use client"
-import { getPost } from '@/redux/slices/postSlice';
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 function HomePage() {
-    const dispatch = useDispatch();
-    const { post } = useSelector((state) => state.post);
-    // console.log(post)
-    async function fetchPost() {
-        try {
-            const res = await dispatch(getPost());
-            // console.log(res)
-        } catch (error) {
-            throw new Error(error.message)
-            // console.log(error)
-        }
-    }
+    const router = useRouter();
 
     useEffect(() => {
-        fetchPost();
-    }, []);
-    return (
-        <div>
-            <h1>Hello</h1>
-            <div dangerouslySetInnerHTML={{ __html: post?.content }} />
-        </div>
-    )
+        // Redirect to "/admin" when the component is mounted
+        router.push('/admin');
+    }, [router]); // Empty dependency array ensures it runs only once after mount
+
+    return null; // Since we are redirecting, you can return null or a loading indicator.
 }
 
-export default HomePage
+export default HomePage;

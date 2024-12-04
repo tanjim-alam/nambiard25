@@ -1,3 +1,4 @@
+import axiosInstance from "@/utils/axiosInstance";
 import axios from "axios";
 
 const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
@@ -12,7 +13,7 @@ const initialState = {
 
 export const login = createAsyncThunk("/login", async (data) => {
     try {
-        const res = await axios.post("/api/auth/login", data);
+        const res = await axiosInstance.post("/auth/login", data);
         return await res.data
     } catch (error) {
         throw new Error(error.message)
@@ -24,7 +25,7 @@ export const login = createAsyncThunk("/login", async (data) => {
 export const getProfile = createAsyncThunk('auth/getProfile', async (token) => {
     // console.log("token", token)
     try {
-        const response = await axios.get('/api/auth/profile', { headers: { Authorization: token } });
+        const response = await axiosInstance.get('/auth/profile', { headers: { Authorization: token } });
         // console.log("res", response)
         return response.data;
     } catch (error) {

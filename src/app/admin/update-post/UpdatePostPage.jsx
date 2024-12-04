@@ -80,6 +80,7 @@ function UpdatePostPage() {
         }
     }, [post]);
 
+    const [prevImag, setPrevImage] = useState(null)
     const handleInput = (e) => {
         const { name, value } = e.target;
         setPostData(prev => ({

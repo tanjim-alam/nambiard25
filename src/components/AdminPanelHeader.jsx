@@ -42,10 +42,14 @@ function AdminPanelHeader() {
     }, [token]);
 
     async function handleLogout() {
-        await dispatch(logout(token));
+        // await dispatch(logout(token));
         localStorage.removeItem("token");
         router.push("/login")
     }
+
+    function getFirstLatter(name) {
+        return name[0].toUpperCase();
+    };
     return (
         <>
             <div className='bg-black static top-0 z-50'>
@@ -63,7 +67,8 @@ function AdminPanelHeader() {
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+                                    <p className='text-black bg-white px-3.5 py-1 text-center rounded-full'>{getFirstLatter(user?.name || "T")}</p>
+                                    {/* <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" /> */}
                                 </IconButton>
                             </Tooltip>
                             <Menu
