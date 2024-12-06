@@ -5,13 +5,16 @@ import DashBoard from '@/app/dashboard/Dashboard'; // Adjust the import accordin
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
 import { addPost } from '@/redux/slices/postSlice';
-
+import { RxCross2 } from "react-icons/rx";
+import { MdEdit } from "react-icons/md";
 function AddPostPage() {
     const dispatch = useDispatch();
     const editor1 = useRef(null);
     const editor2 = useRef(null);
-    const [content1, setContent1] = useState('');
-    const [content2, setContent2] = useState('');
+    const editor3 = useRef(null);
+    const editor4 = useRef(null);
+    const editor5 = useRef(null);
+    const editor6 = useRef(null);
 
     const config1 = useMemo(() => ({
         readonly: false,
@@ -24,11 +27,35 @@ function AddPostPage() {
         placeholder: 'Start typing...',
         height: 600 // Set the height here (in pixels)
     }), []);
+    const config3 = useMemo(() => ({
+        readonly: false,
+        placeholder: 'Start typing...',
+        height: 300 // Set the height here (in pixels)
+    }), []);
+    const config4 = useMemo(() => ({
+        readonly: false,
+        placeholder: 'Start typing...',
+        height: 300 // Set the height here (in pixels)
+    }), []);
+    const config5 = useMemo(() => ({
+        readonly: false,
+        placeholder: 'Start typing...',
+        height: 300 // Set the height here (in pixels)
+    }), []);
+    const config6 = useMemo(() => ({
+        readonly: false,
+        placeholder: 'Start typing...',
+        height: 300 // Set the height here (in pixels)
+    }), []);
 
     const [postData, setPostData] = useState({
         projectName: "",
+        location: "",
+        price: "",
+        status: "",
         projectType: "",
         noOfUnits: "",
+        noOfFloors: "",
         projectStatus: "",
         builder: "",
         totalLandArea: "",
@@ -38,9 +65,59 @@ function AddPostPage() {
         towersAndBlocks: "",
         reraNo: "",
         about: "",
+        overView: "",
+        configurationContent: "",
+        amenitiesContent: "",
+        priceContent: "",
         content: "",
         featureImage: null
     });
+    // ==================
+    const [priceDetails, setPriceDetails] = useState({
+        type: "",
+        price: "",
+        saleableArea: ""
+    });
+    const [priceDetailsList, setPriceDetailsList] = useState([]);
+
+    const handlePriceDetailsChange = (e) => {
+        const { name, value } = e.target;
+        setPriceDetails(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    function handlePriceDetails(data) {
+        if (!priceDetails.type || !priceDetails.price || !priceDetails.saleableArea) {
+            return alert("All fields are required")
+        }
+        // Add priceDetails to the list
+        let nextId = priceDetailsList.length + 1;
+        const items = {
+            id: nextId,
+            type: data.type,
+            price: data.price,
+            saleableArea: data.saleableArea
+        }
+        setPriceDetailsList(prevList => [
+            ...prevList,
+            items
+        ]);
+
+        // Reset the form fields
+        setPriceDetails({
+            type: '',
+            price: '',
+            saleableArea: ''
+        });
+    }
+
+    function handleRemovePriceDetailsListItem(id) {
+        const newItems = priceDetailsList.filter((item) => item.id !== id);
+        setPriceDetailsList(newItems);
+    }
+    // ===================
     const [prevImage, setPrevImage] = useState(null);
 
     const handleInput = (e) => {
@@ -67,13 +144,57 @@ function AddPostPage() {
         }
     };
 
+    const [galleryImage, setGalleryImage] = useState("");
+    const [galleryPrevImage, setGalleryPrevImage] = useState(null);
+    const [galleryImageList, setGalleryImageList] = useState([]);
+    const [galleryPrevImageList, setGalleryPrevImageList] = useState([]);
+
+    const handleGalleryFileInput = (e) => {
+        const { files } = e.target;
+        const file = files[0];
+        if (file) {
+            setGalleryImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setGalleryPrevImage(reader.result);
+            };
+            reader.readAsDataURL(file); // This line is necessary to trigger the onloadend event
+        }
+    };
+
+    const handleGalleryImage = () => {
+        if (!galleryImage) {
+            return alert("Please upload image")
+        }
+        setGalleryImageList((prev) => [
+            ...prev,
+            galleryImage
+        ]);
+        setGalleryPrevImageList((prev) => [
+            ...prev,
+            galleryPrevImage
+        ]);
+        setGalleryImage("");
+        setGalleryPrevImage(null);
+    };
+
+    function handleRemoveGalleryImage(idx) {
+        const newImages = galleryImageList.filter((image, i) => i !== idx);
+        setGalleryImageList(newImages)
+        const newPrevImages = galleryPrevImageList.filter((image, i) => i !== idx);
+        setGalleryPrevImageList(newPrevImages);
+    }
+
     const handleSubmit = async () => {
-        // console.log(postData);
 
         const formData = new FormData();
         formData.append("projectName", postData.projectName);
+        formData.append("location", postData.location);
+        formData.append("price", postData.price);
+        formData.append("status", postData.status);
         formData.append("projectType", postData.projectType);
         formData.append("noOfUnits", postData.noOfUnits);
+        formData.append("noOfFloors", postData.noOfFloors);
         formData.append("projectStatus", postData.projectStatus);
         formData.append("builder", postData.builder);
         formData.append("totalLandArea", postData.totalLandArea);
@@ -83,15 +204,24 @@ function AddPostPage() {
         formData.append("towersAndBlocks", postData.towersAndBlocks);
         formData.append("reraNo", postData.reraNo);
         formData.append("about", postData.about);
+        formData.append("overView", postData.overView);
+        formData.append("configurationContent", postData.configurationContent);
+        formData.append("amenitiesContent", postData.amenitiesContent);
+        formData.append("priceContent", postData.priceContent);
         formData.append("content", postData.content);
         formData.append("featureImage", postData.featureImage);
 
+        const sanitizedPriceDetailsList = priceDetailsList.map(({ id, ...rest }) => rest);
+        formData.append("priceDetails", JSON.stringify(sanitizedPriceDetailsList));
+
+        galleryImageList.forEach(file => {
+            formData.append('gallery', file);
+        });
+
         try {
             const res = await dispatch(addPost(formData));
-            // console.log(res);
         } catch (error) {
             throw new Error(error.message)
-            // console.log(error);
         }
     };
 
@@ -111,6 +241,16 @@ function AddPostPage() {
                         />
                     </div>
                     <div className="mt-4 bg-white" style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}>
+                        <p className='border-b p-2'>Overview</p>
+                        <JoditEditor
+                            ref={editor3}
+                            config={config3}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => setPostData(prev => ({ ...prev, overView: newContent }))}
+                            value={postData.overView}
+                        />
+                    </div>
+                    <div className="mt-4 bg-white" style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}>
                         <p className='border-b p-2'>About</p>
                         <JoditEditor
                             ref={editor1}
@@ -118,6 +258,36 @@ function AddPostPage() {
                             tabIndex={1} // tabIndex of textarea
                             onBlur={newContent => setPostData(prev => ({ ...prev, about: newContent }))}
                             value={postData.about}
+                        />
+                    </div>
+                    <div className="mt-4 bg-white" style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}>
+                        <p className='border-b p-2'>Configuration</p>
+                        <JoditEditor
+                            ref={editor4}
+                            config={config4}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => setPostData(prev => ({ ...prev, configurationContent: newContent }))}
+                            value={postData.configurationContent}
+                        />
+                    </div>
+                    <div className="mt-4 bg-white" style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}>
+                        <p className='border-b p-2'>Amenities</p>
+                        <JoditEditor
+                            ref={editor5}
+                            config={config5}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => setPostData(prev => ({ ...prev, amenitiesContent: newContent }))}
+                            value={postData.amenitiesContent}
+                        />
+                    </div>
+                    <div className="mt-4 bg-white" style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}>
+                        <p className='border-b p-2'>Price</p>
+                        <JoditEditor
+                            ref={editor6}
+                            config={config6}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => setPostData(prev => ({ ...prev, priceContent: newContent }))}
+                            value={postData.priceContent}
                         />
                     </div>
                     <div className="mt-4 bg-white" style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}>
@@ -147,7 +317,11 @@ function AddPostPage() {
                     </div>
                     {[
                         { label: "Project Type", name: "projectType" },
+                        { label: "Location", name: "location" },
+                        { label: "Starting Price", name: "price" },
+                        { label: "Status", name: "status" },
                         { label: "No Of Units", name: "noOfUnits" },
+                        { label: "No Of Floors", name: "noOfFloors" },
                         { label: "Project Status", name: "projectStatus" },
                         { label: "Builder", name: "builder" },
                         { label: "Total Land Area", name: "totalLandArea" },
@@ -183,6 +357,137 @@ function AddPostPage() {
                             </ul>
                         </div>
                     </div>
+
+                    {/* =============== */}
+                    <div
+                        className='bg-white'
+                        style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}
+                    >
+                        <p className='border-b p-2'>Type, Price, Saleable Area</p>
+                        <div className='p-2 flex flex-col gap-2'>
+                            <div className='bg-white'>
+                                <TextField
+                                    className='w-full'
+                                    label={"Type"}
+                                    variant="outlined"
+                                    name={"type"}
+                                    value={priceDetails.type}
+                                    onChange={handlePriceDetailsChange}
+                                />
+                            </div>
+                            <div className='bg-white'>
+                                <TextField
+                                    className='w-full'
+                                    label={"Price"}
+                                    variant="outlined"
+                                    name={"price"}
+                                    value={priceDetails.price}
+                                    onChange={handlePriceDetailsChange}
+                                />
+                            </div>
+                            <div className='bg-white'>
+                                <TextField
+                                    className='w-full'
+                                    label={"Saleable Area"}
+                                    variant="outlined"
+                                    name={"saleableArea"}
+                                    value={priceDetails.saleableArea}
+                                    onChange={handlePriceDetailsChange}
+                                />
+                            </div>
+                            <div className='bg-white'>
+                                <button
+                                    onClick={() => handlePriceDetails(priceDetails)}
+                                    className='w-full text-center bg-green-500 text-white p-2'
+                                >Add More</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {
+                        priceDetailsList?.length > 0 ? (
+                            <div
+                                className='bg-white'
+                                style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}
+                            >
+                                <p className='border-b p-2'>Price Details List</p>
+                                <div className='p-2'>
+                                    {
+                                        priceDetailsList?.map((data, i) => (
+                                            <div
+                                                key={i}
+                                                className='flex justify-between p-2'
+                                                style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px" }}
+                                            >
+                                                <span className='text-sm'>{data.type}</span>
+                                                <span className='text-sm'>{data.saleableArea}</span>
+                                                <span className='text-sm'>{data.price}</span>
+                                                {/* <button className='text-md text-green-500'><MdEdit /></button> */}
+                                                <button
+                                                    onClick={() => handleRemovePriceDetailsListItem(data.id)}
+                                                    className='text-md text-primary'
+                                                ><RxCross2 />
+                                                </button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        ) : null
+                    }
+
+                    {/* ============== */}
+
+                    {/* ===============Gallery========== */}
+                    <div
+                        className='bg-white'
+                        style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}
+                    >
+                        <p className='border-b p-2'>Gallery image</p>
+                        <div className='p-2'>
+                            <input
+                                type="file"
+                                className='w-full'
+                                name='galleryImage'
+                                onChange={handleGalleryFileInput}
+                            />
+                            <div className='bg-white mt-3'>
+                                <button
+                                    onClick={() => handleGalleryImage(galleryImage, galleryPrevImage)}
+                                    className='w-full text-center bg-green-500 text-white p-2'
+                                >Add Image</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {
+                        galleryPrevImageList.length > 0 ? (
+                            <div
+                                className='bg-white'
+                                style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}
+                            >
+                                <p className='border-b p-2'>Gallery image</p>
+                                <div className='p-2'>
+                                    <div className='grid grid-cols-2 gap-3 justify-between'>
+                                        {galleryPrevImageList.map((src, index) => (
+                                            <div className='relative' key={index}>
+                                                <img src={src} alt={`Preview ${index}`}
+                                                    className='w-[100%] h-[70px]'
+                                                />
+                                                <button
+                                                    onClick={() => handleRemoveGalleryImage(index)}
+                                                    className='text-md text-primary absolute top-0 right-0 bg-white p-1 rounded-full'
+                                                ><RxCross2 />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null
+                    }
+
+                    {/* ===============Gallery========== */}
                     <div
                         className='bg-white'
                         style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset" }}
