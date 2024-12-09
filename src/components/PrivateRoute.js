@@ -14,13 +14,15 @@ const PrivateRoute = ({ children, roles = [] }) => {
     async function fetchProfile() {
         try {
             const res = await dispatch(getProfile(token));
-            // console.log("Profile fetched:", res);
+            if (res?.error) {
+                localStorage.removeItem("token");
+                router.push('/login');
+            }
         } catch (error) {
             throw new Error(error.message)
             // console.log("Error fetching profile:", error.message);
         }
     }
-
     useEffect(() => {
         if (token) {
             fetchProfile();

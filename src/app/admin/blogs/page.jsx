@@ -1,11 +1,11 @@
 import React from 'react'
-import UpdatePostPage from './UpdatePostPage'
 import PrivateRoute from '@/components/PrivateRoute'
+import BlogsPage from './BlogsPage'
 
 function page() {
     return (
         <PrivateRoute roles={["admin"]}>
-            <UpdatePostPage />
+            <BlogsPage />
         </PrivateRoute>
     )
 }

@@ -30,19 +30,19 @@ export const adminMenu = [
     {
         id: 4,
         label: 'Leads',
-        path: '/leads',
+        path: '/admin/leads',
         icon: HiOutlineUsers
     },
     {
         id: 5,
         label: 'Blogs',
-        path: '/blogs',
+        path: '/admin/blogs',
         icon: HiOutlineDocumentText
     },
     {
         id: 6,
         label: 'Add Blog',
-        path: '/add-blog',
+        path: '/admin/add-blog',
         icon: HiOutlineAnnotation
     }
 ]

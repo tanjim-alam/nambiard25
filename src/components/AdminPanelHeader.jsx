@@ -33,7 +33,8 @@ function AdminPanelHeader() {
     // console.log(user);
 
     async function fetchProfile() {
-        await dispatch(getProfile(token))
+        const res = await dispatch(getProfile(token));
+        console.log(res);
     }
     useEffect(() => {
         if (token) {
